@@ -1,0 +1,48 @@
+version: "3"
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development    
+    volumes:
+      - .:/usr/src/app
+    env_file:
+    - .env
+    command: npm run start:dev
+    ports:
+      - 3000:3000   
+
+  postgres:
+    container_name: postgres  
+    env_file:
+      - docker.env      
+    image: postgres:latest
+    ports:
+      - "5430:5432"    
+    volumes:
+      - postgres_api_data:/data/postgres    
+    networks:
+      - postgres
+  
+  pgadmin:
+    links:
+      - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_api_data:/root/.pgadmin
+    env_file:
+      - docker.env
+    networks:
+      - postgres
+
+volumes:
+  postgres_api_data: {}
+  pgadmin_api_data: {}
+
+networks:
+  postgres:
+    driver: bridge
