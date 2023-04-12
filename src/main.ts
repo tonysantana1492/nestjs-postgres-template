@@ -35,8 +35,8 @@ async function bootstrap() {
 	});
 
 	const config = new DocumentBuilder()
-		.setTitle('NestJS Starter Template')
-		.setDescription('This is a starter template where everything is set up.')
+		.setTitle('NestJS Template')
+		.setDescription('This is a starter template')
 		.setVersion('1.0')
 		.build();
 
