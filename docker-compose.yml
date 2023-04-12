@@ -11,7 +11,9 @@ services:
     - .env
     command: npm run start:dev
     ports:
-      - 3000:3000   
+      - 3000:3000  
+    networks:
+      - postgres 
 
   postgres:
     container_name: postgres  
