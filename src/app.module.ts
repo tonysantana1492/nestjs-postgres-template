@@ -1,4 +1,11 @@
-import { ClassSerializerInterceptor, MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
+import {
+	CacheModule,
+	ClassSerializerInterceptor,
+	MiddlewareConsumer,
+	Module,
+	ValidationPipe,
+	CacheInterceptor,
+} from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { validate } from './env.validation';
@@ -12,6 +19,12 @@ import { AppController } from './app.controller';
 import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './health/health.module';
 import { LoggerModule } from './logger/logger.module';
+import { UsersModule } from './features/users/users.module';
+import { EmailModule } from './email/email.module';
+import emailConfig from './config/email.config';
+import { EmailConfirmationModule } from './features/email-confirmation/email-confirmation.module';
+import { AuthenticationModule } from './authentication/authentication.module';
+import redisConfig, { cacheModuleAsyncOptions } from './config/redis.config';
 
 @Module({
 	imports: [
@@ -23,11 +36,16 @@ import { LoggerModule } from './logger/logger.module';
 			envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 			ignoreEnvFile: process.env.NODE_ENV === 'production',
 			validate,
-			load: [appConfig, databaseConfig, typeormConfig, jwtConfig],
+			load: [appConfig, emailConfig, databaseConfig, typeormConfig, jwtConfig, redisConfig],
 		}),
+		CacheModule.registerAsync(cacheModuleAsyncOptions),
 		DatabaseModule,
 		HealthModule,
 		LoggerModule,
+		UsersModule,
+		EmailModule,
+		EmailConfirmationModule,
+		AuthenticationModule,
 	],
 	controllers: [AppController],
 	providers: [
@@ -43,6 +61,10 @@ import { LoggerModule } from './logger/logger.module';
 			provide: APP_INTERCEPTOR,
 			useClass: ClassSerializerInterceptor,
 		},
+		// {
+		// 	provide: APP_INTERCEPTOR,
+		// 	useClass: CacheInterceptor,
+		// },
 		// {
 		//   provide: APP_FILTER,
 		//   useClass: ExceptionsLoggerFilter,
