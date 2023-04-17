@@ -2,6 +2,9 @@ import { ConfigModule, ConfigService, registerAs } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DatabaseLogger } from '../database/database-logger';
 import { Log } from 'src/logger/entities/log.entity';
+import { User } from 'src/features/users/entities/user.entity';
+import { Address } from 'src/features/users/entities/address.entity';
+import { join } from 'path';
 
 class TypeOrmConfig {
 	static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
@@ -12,7 +15,7 @@ class TypeOrmConfig {
 			username: configService.get('database.username'),
 			password: configService.get('database.password'),
 			database: configService.get('database.name'),
-			entities: [Log],
+			entities: [Log, User, Address],
 			synchronize: configService.get('typeorm.synchronize'),
 		};
 
