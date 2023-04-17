@@ -12,7 +12,7 @@ COPY --chown=node:node . .
 USER node
 
 # Build production
-FROM node:18-alpine As build
+FROM node:18-alpine As builder
 
 WORKDIR /usr/src/app
 
@@ -26,12 +26,16 @@ COPY --chown=node:node . .
 
 RUN npm run build
 
-USER node
-
 # Production
 FROM node:18-alpine As production
 
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+ENV NODE_ENV production
+
+USER node
+
+WORKDIR /usr/src/app
+
+COPY --from=builder --chown=node:node /usr/src/app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /usr/src/app/dist ./dist
 
 CMD [ "node", "dist/main.js" ]
