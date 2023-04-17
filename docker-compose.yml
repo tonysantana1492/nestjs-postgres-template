@@ -9,6 +9,8 @@ services:
       - .:/usr/src/app
     env_file:
     - .env
+    depends_on:
+      - postgres
     command: npm run start:dev
     ports:
       - 3000:3000  
@@ -16,14 +18,14 @@ services:
       - postgres 
 
   postgres:
-    container_name: postgres  
-    env_file:
-      - docker.env      
+    container_name: postgres           
     image: postgres:latest
     ports:
       - "5430:5432"    
     volumes:
-      - postgres_api_data:/data/postgres    
+      - postgres_api_data:/data/postgres   
+    env_file:
+      - docker.env  
     networks:
       - postgres
   
@@ -40,6 +42,22 @@ services:
       - docker.env
     networks:
       - postgres
+  
+  redis:
+    container_name: redis
+    image: "redis:6.2-alpine"
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    container_name: rediscommander
+    image: rediscommander/redis-commander:latest    
+    env_file:
+      - docker.env
+    ports:
+      - "8081:8081"
+    depends_on:
+        - redis
 
 volumes:
   postgres_api_data: {}
