@@ -1,9 +1,11 @@
 import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller({
 	version: VERSION_NEUTRAL,
 })
+@ApiTags('server-info')
 export class AppController {
 	constructor(private configService: ConfigService) {}
 
