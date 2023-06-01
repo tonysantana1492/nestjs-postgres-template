@@ -4,7 +4,10 @@ import { DatabaseLogger } from '../database/database-logger';
 import { Log } from 'src/logger/entities/log.entity';
 import { User } from 'src/features/users/entities/user.entity';
 import { Address } from 'src/features/users/entities/address.entity';
-import { join } from 'path';
+import { DatabaseFile } from 'src/features/database-files/entities/database-file.entity';
+import { LocalFile } from 'src/features/local-files/entities/local-file.entity';
+import { PrivateFile } from 'src/features/files/entities/private-file.entity';
+import { PublicFile } from 'src/features/files/entities/public-file.entity';
 
 class TypeOrmConfig {
 	static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
@@ -15,7 +18,7 @@ class TypeOrmConfig {
 			username: configService.get('database.username'),
 			password: configService.get('database.password'),
 			database: configService.get('database.name'),
-			entities: [Log, User, Address],
+			entities: [Log, User, Address, DatabaseFile, LocalFile, PrivateFile, PublicFile],
 			synchronize: configService.get('typeorm.synchronize'),
 		};
 
