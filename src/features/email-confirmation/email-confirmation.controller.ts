@@ -2,8 +2,8 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { EmailConfirmationService } from './email-confirmation.service';
 import { ConfirmEmailDto } from './dto/confirm-email.dto';
-import { RequestWithUser } from 'src/authentication/request-with-user.interface';
-import { JwtAuthenticationGuard } from 'src/authentication/jwt-authentication.guard';
+import { RequestWithUser } from 'src/authentication/interfaces/request-with-user.interface';
+import { JwtAuthenticationGuard } from 'src/authentication/guards/jwt-authentication.guard';
 
 @Controller('email-confirmation')
 @ApiTags('authentication')
