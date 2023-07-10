@@ -5,11 +5,18 @@ import { AuthenticationService } from './authentication.service';
 import { EmailConfirmationModule } from 'src/features/email-confirmation/email-confirmation.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { LocalStrategy } from './strategies/local.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { TwoFactorAuthenticationController } from './two-factor/two-factor-authentication.controller';
+import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
+import { TwoFactorAuthenticationService } from './two-factor/two-factor-authentication.service';
+import { JwtTwoFactorStrategy } from './two-factor/jwt-two-factor.strategy';
 
 @Module({
 	imports: [
 		UsersModule,
-		EmailConfirmationModule,
+		PassportModule,
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
@@ -20,9 +27,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 				},
 			}),
 		}),
+		EmailConfirmationModule,
 	],
-	controllers: [AuthenticationController],
-	providers: [AuthenticationService],
-	exports: [],
+	controllers: [AuthenticationController, TwoFactorAuthenticationController],
+	providers: [
+		AuthenticationService,
+		LocalStrategy,
+		JwtStrategy,
+		JwtRefreshTokenStrategy,
+		TwoFactorAuthenticationService,
+		JwtTwoFactorStrategy,
+	],
+	exports: [AuthenticationService],
 })
 export class AuthenticationModule {}
