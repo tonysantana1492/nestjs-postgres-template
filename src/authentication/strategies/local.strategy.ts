@@ -12,6 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
+	// the return value is inserted into the request object
 	async validate(email: string, password: string): Promise<User> {
 		return this.authenticationService.getAuthenticatedUser(email, password);
 	}

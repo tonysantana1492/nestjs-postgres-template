@@ -19,6 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
+	// the return value is inserted into the request object
 	async validate(payload: TokenPayload) {
 		return this.userService.getById(payload.userId);
 	}
