@@ -1,10 +1,10 @@
 import {
+	CacheInterceptor,
 	CacheModule,
 	ClassSerializerInterceptor,
 	MiddlewareConsumer,
 	Module,
 	ValidationPipe,
-	CacheInterceptor,
 } from '@nestjs/common';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -25,6 +25,11 @@ import emailConfig from './config/email.config';
 import { EmailConfirmationModule } from './features/email-confirmation/email-confirmation.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import redisConfig, { cacheModuleAsyncOptions } from './config/redis.config';
+import { LocalFilesModule } from './features/local-files/local-files.module';
+import { DatabaseFilesModule } from './features/database-files/database-files.module';
+import { FilesModule } from './features/files/files.module';
+import { AuthorizationModule } from './authorization/authorization.module';
+import { RolesGuard } from './authorization/guards/roles.guard';
 
 @Module({
 	imports: [
@@ -46,12 +51,20 @@ import redisConfig, { cacheModuleAsyncOptions } from './config/redis.config';
 		EmailModule,
 		EmailConfirmationModule,
 		AuthenticationModule,
+		AuthorizationModule,
+		LocalFilesModule,
+		DatabaseFilesModule,
+		FilesModule,
 	],
 	controllers: [AppController],
 	providers: [
 		{
 			provide: APP_GUARD,
 			useClass: ThrottlerGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
 		},
 		{
 			provide: APP_PIPE,
@@ -61,18 +74,10 @@ import redisConfig, { cacheModuleAsyncOptions } from './config/redis.config';
 			provide: APP_INTERCEPTOR,
 			useClass: ClassSerializerInterceptor,
 		},
-		// {
-		// 	provide: APP_INTERCEPTOR,
-		// 	useClass: CacheInterceptor,
-		// },
-		// {
-		//   provide: APP_FILTER,
-		//   useClass: ExceptionsLoggerFilter,
-		// },
-		// {
-		//   provide: APP_INTERCEPTOR,
-		//   useClass: ExcludeNullInterceptor,
-		// },
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: CacheInterceptor,
+		},
 	],
 })
 export class AppModule {
