@@ -25,7 +25,7 @@ export class EmailConfirmationService {
 
 		const url = `${this.configService.get('email.confirmationLink')}?token=${token}`;
 
-		const text = `Welcome to the application. To confirm the email address, click here:<br><a href="${url}">${url}</a>`;
+		// const text = `Welcome to the application. To confirm the email address, click here:<br><a href="${url}">${url}</a>`;
 
 		const options = {
 			from: this.configService.get('email.from'),
@@ -34,9 +34,8 @@ export class EmailConfirmationService {
 			// html: `<h2 style="color:#ff6600;">Hello ${name}!</h2><p>${text}</p>`,
 			template: 'confirm-email',
 			context: {
-				// Data to be sent to template engine.
-				code: '2565',
-				username: name,
+				url,
+				name,
 			},
 		};
 
