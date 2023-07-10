@@ -38,10 +38,11 @@ async function bootstrap() {
 		.setTitle('NestJS Template')
 		.setDescription('This is a starter template')
 		.setVersion('1.0')
+		.addBearerAuth()
 		.build();
 
 	const document = SwaggerModule.createDocument(app, config);
-	SwaggerModule.setup('swagger/v1', app, document);
+	SwaggerModule.setup(`doc/v${version}`, app, document);
 
 	await app.listen(configService.get('app.port'));
 
