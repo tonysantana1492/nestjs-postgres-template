@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { PostgresErrorCode } from 'src/database/postgres-error-codes.enum';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { TokenPayload } from './token-payload.interface';
+import { TokenPayload } from './interfaces/token-payload.interface';
 
 @Injectable()
 export class AuthenticationService {
@@ -43,6 +43,16 @@ export class AuthenticationService {
 		} catch (error) {
 			throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	public getJwtAccessToken(userId: number, isSecondFactorAuthenticated = false) {
+		const payload: TokenPayload = { userId, isSecondFactorAuthenticated };
+		const token = this.jwtService.sign(payload, {
+			secret: this.configService.get('jwt.accessTokenSecret'),
+			expiresIn: `${this.configService.get('jwt.accessTokenExpirationTime')}s`,
+		});
+
+		return token;
 	}
 
 	public getCookieWithJwtAccessToken(userId: number, isSecondFactorAuthenticated = false) {
