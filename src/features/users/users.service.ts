@@ -93,6 +93,24 @@ export class UsersService {
 		});
 	}
 
+	async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+		return this.usersRepository.update(userId, {
+			twoFactorAuthenticationSecret: secret,
+		});
+	}
+
+	async turnOnTwoFactorAuthentication(userId: number) {
+		return this.usersRepository.update(userId, {
+			isTwoFactorAuthenticationEnabled: true,
+		});
+	}
+
+	async turnOffTwoFactorAuthentication(userId: number) {
+		return this.usersRepository.update(userId, {
+			isTwoFactorAuthenticationEnabled: false,
+		});
+	}
+
 	async getAvatar(userId: number) {
 		const user = await this.getById(userId);
 		const fileId = user.avatarId;
