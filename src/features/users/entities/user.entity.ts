@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Role } from 'src/authorization/role.enum';
+import { Role } from 'src/authorization/enums/role.enum';
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Address } from './address.entity';
 // import { DatabaseFile } from 'src/features/database-files/entities/database-file.entity';
@@ -20,6 +20,13 @@ export class User {
 
 	@Column({ type: 'enum', enum: Role, default: Role.User })
 	role?: Role;
+	// @Column({
+	// 	type: 'enum',
+	// 	enum: Role,
+	// 	array: true,
+	// 	default: [Role.User],
+	// })
+	// public roles?: Role[];
 
 	@Column()
 	public name: string;
@@ -50,7 +57,7 @@ export class User {
 	@Exclude()
 	public currentHashedRefreshToken?: string;
 
-	// TODO: use Amazon S3 to store avatar publicly
+	// TODO: use Amazon S3 to store avatar as public file
 	// @JoinColumn()
 	// @OneToOne(() => PublicFile, {
 	//   eager: true,
@@ -65,7 +72,7 @@ export class User {
 	// })
 	// public avatar?: DatabaseFile;
 
-	// TODO: store file into the sistem file
+	// TODO: store file into the system file
 	@JoinColumn({ name: 'avatarId' })
 	@OneToOne(() => LocalFile, {
 		nullable: true,
